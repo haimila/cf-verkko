@@ -87,4 +87,70 @@ Resources:
         - Key: Name
           Value: nat-mitja
 
-  
+  Sub1RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+
+  Sub2RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+
+  Sub3RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+
+  Sub1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref Sub1RouteTable
+      SubnetId: !Ref Subnet1Public
+
+  Sub2Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref Sub2RouteTable
+      SubnetId: !Ref Subnet2Private
+
+  Sub3Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref Sub3RouteTable
+      SubnetId: !Ref Subnet3Private
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref Sub1RouteTable
+      GatewayId: !Ref InternetGateway
+
+  Private1Route:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref Sub2RouteTable
+      NatGatewayId: !Ref NAT
+
+  Private2Route:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref Sub3RouteTable
+      NatGatewayId: !Ref NAT
+
+Outputs:
+
+  VPC:
+    Value: !Ref Vpc
+
+  Subnet1:
+    Value: !Ref Subnet1Public
+
+  Subnet2:
+    Value: !Ref Subnet2Private
+
+  Subnet3:
+    Value: !Ref Subnet3Private
