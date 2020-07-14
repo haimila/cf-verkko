@@ -143,14 +143,22 @@ Resources:
 
 Outputs:
 
-  VPC:
+  Veepeecee:
     Value: !Ref Vpc
+    Export:
+      Name: veepeecee
 
-  Subnet1:
+  Subnet-Mitja1:
     Value: !Ref Subnet1Public
+    Export:
+      Name: subnetti1
 
-  Subnet2:
+  Subnet-Mitja2:
     Value: !Ref Subnet2Private
+    Export:
+      Name: subnetti2
 
-  Subnet3:
+  Subnet-Mitja3:
     Value: !Ref Subnet3Private
+    Export:
+      Name: subnetti3
