@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Mitjan CloudFormation VPC-tehtävä
+
+Parameters:
+
+  VPCCIDR:
+    Type: String
+    Default: 10.0.0.0/16
+
+  Subnet1CIDR:
+    Type: String
+    Default: 10.0.0.0/24
+
+  Subnet2CIDR:
+    Type: String
+    Default: 10.0.1.0/24
+
+  Subnet3CIDR:
+    Type: String
+    Default: 10.0.2.0/24
+
+Resources:
+
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VPCCIDR
+      Tags:
+        - Key: Name
+          Value: mitja-cf-vpc
+
+  Subnet1Public:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1a
+      CidrBlock: !Ref Subnet1CIDR
+      MapPublicIpOnLaunch: True
+      Tags:
+        - Key: Name
+          Value: public-mitja
+      VpcId: !Ref Vpc
+
+  Subnet2Private:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1c
+      CidrBlock: !Ref Subnet2CIDR
+      Tags:
+        - Key: Name
+          Value: private1-mitja
+      VpcId: !Ref Vpc
+
+  Subnet3Private:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1d
+      CidrBlock: !Ref Subnet3CIDR
+      Tags:
+        - Key: Name
+          Value: private2-mitja
+      VpcId: !Ref Vpc
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: gateway-mitja
+
+  IGattach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref Vpc
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NAT:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref Subnet1Public
+      Tags:
+        - Key: Name
+          Value: nat-mitja
+
+  
